@@ -15,6 +15,7 @@ type NPC struct {
 	update, time float64
 	prevEvent    tl.Event
 	Target       *Character
+	evade        bool
 } // ☢ ☣
 
 //CreateNPC creates a new non-player character
@@ -59,7 +60,7 @@ func (npc *NPC) Update() {
 		GameOverInfo.text.SetText("You Win! Foes are Vanquished! Press Ctrl+C to Exit")
 		return
 	}
-	if npc.hasDestination {
+	/*if npc.hasDestination {
 
 	} else {
 		//Pick a random point
@@ -72,7 +73,8 @@ func (npc *NPC) Update() {
 			npc.DestY = numY
 			npc.hasDestination = true
 		}
-	}
+
+	}*/
 	if npc.Target != nil {
 		tx, ty := npc.Target.Position()
 		x, y := npc.Position()
@@ -105,6 +107,25 @@ func (npc *NPC) Update() {
 			}
 		}
 
+		if !npc.hasDestination {
+			npc.DestX = tx
+			npc.DestY = ty
+			npc.hasDestination = true
+		}
+
+		if math.Abs(float64(faceX)) <= 10 && math.Abs(float64(faceY)) <= 10 {
+			if rand.Intn(10) == 2 {
+				if npc.hasDestination {
+					npc.ClearPath()
+				}
+				numX := rand.Intn(GameArenaWidth)
+				numY := rand.Intn(GameArenaHeight)
+				npc.DestX = numX
+				npc.DestY = numY
+				npc.hasDestination = true
+			}
+		}
+
 		if rand.Intn(20) == 14 && npc.shootCoolDown == 0 {
 			switch npc.Facing {
 			case Up:
@@ -119,7 +140,9 @@ func (npc *NPC) Update() {
 			npc.shootCoolDown = 1
 		}
 	}
+	npc.InDanger()
 	npc.Character.Update()
+
 }
 
 //Tick processes input and reactes accordingly

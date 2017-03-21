@@ -1,6 +1,8 @@
 package termvel
 
 import (
+	"math"
+	"math/rand"
 	"runtime"
 
 	tl "github.com/JoelOtter/termloop"
@@ -183,6 +185,7 @@ func (char *Character) Update() {
 				if char.Path != nil && len(char.Path) >= 1 {
 					char.pathDestination = Shift(&char.Path)
 				}
+				char.InDanger()
 			} else { //actually move
 				if char.pathDestination.X < char.PrevX {
 					char.Move(Left)
@@ -193,6 +196,7 @@ func (char *Character) Update() {
 				} else if char.pathDestination.Y > char.PrevY {
 					char.Move(Down)
 				}
+
 			}
 		}
 
@@ -220,6 +224,7 @@ func (char *Character) Update() {
 
 	}
 	char.Face(char.Facing)
+	//char.InDanger()
 }
 
 //Die runs when the character's health drops below 0
@@ -277,4 +282,106 @@ func (char *Character) ClearPath() {
 	char.Path = nil
 	char.pathDestination = nil
 	Deselect(char.DestX, char.DestY) //This should really only be for the player
+}
+
+//InDanger checks if the character is in danger of being hit by a bullets and react.
+//TODO: include explosions
+func (char *Character) InDanger() {
+	for _, b := range GameBullets.bullets {
+		if b.owner == char {
+			continue
+		}
+		tx, ty := b.Position()
+		x, y := char.Position()
+		faceX, faceY := 0, 0
+		if tx < x { // To the LEFT
+			faceX = x - tx
+			faceX *= -1
+		} else if tx > x { // To the RIGHT
+			faceX = tx - x
+		}
+
+		if ty < y { // Above (UP)
+			faceY = y - ty
+			faceY *= -1
+		} else if ty > y { // Below (DOWN)
+			faceY = ty - y
+		}
+
+		//If it's kind of close let's check the trajectory
+		if math.Abs(float64(faceX)) <= 5 && math.Abs(float64(faceY)) <= 5 {
+
+			if ty == y {
+				if faceX < 0 && b.Velocity == Right { // To the left and moving right
+					if rand.Intn(2) == 1 {
+						char.ClearPath()
+						char.Move(Up)
+						//char.hasDestination = true
+					} else {
+						char.ClearPath()
+						char.Move(Down)
+						//char.hasDestination = true
+					}
+					//NPCInformation.text.SetText("Coming in HOT!")
+				} else if faceX > 0 && b.Velocity == Left { // To the right and moving left
+					if rand.Intn(2) == 1 {
+						char.ClearPath()
+						char.Move(Up)
+						//char.hasDestination = true
+					} else {
+						char.ClearPath()
+						char.Move(Down)
+						//char.hasDestination = true
+					}
+					//NPCInformation.text.SetText("Coming in HOT!")
+				}
+			}
+
+			if tx == x {
+				if faceY < 0 && b.Velocity == Down { // Above and moving down
+					if rand.Intn(2) == 1 {
+						char.ClearPath()
+						char.Move(Left)
+						char.Move(Left)
+						//char.hasDestination = true
+					} else {
+						char.ClearPath()
+						char.Move(Right)
+						char.Move(Right)
+						//char.hasDestination = true
+					}
+					//NPCInformation.text.SetText("Coming in HOT!")
+				} else if faceY > 0 && b.Velocity == Up { // Below and moving Up
+					if rand.Intn(2) == 1 {
+						char.ClearPath()
+						char.Move(Left)
+						char.Move(Left)
+						//char.hasDestination = true
+					} else {
+						char.ClearPath()
+						char.Move(Right)
+						char.Move(Right)
+						//char.hasDestination = true
+					}
+					//NPCInformation.text.SetText("Coming in HOT!")
+				}
+			}
+		} else {
+			//NPCInformation.text.SetText("SAFE!")
+		}
+
+		/*if math.Abs(float64(faceX))/2 > math.Abs(float64(faceY)) {
+			if faceX < 0 {
+				npc.Face(Left)
+			} else {
+				npc.Face(Right)
+			}
+		} else {
+			if faceY < 0 {
+				npc.Face(Up)
+			} else {
+				npc.Face(Down)
+			}
+		}*/
+	}
 }
