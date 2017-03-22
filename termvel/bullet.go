@@ -118,12 +118,21 @@ func (b *Bullet) Update() {
 	switch b.Velocity {
 	case Up:
 		b.SetPosition(x, y-1)
+		break
 	case Down:
 		b.SetPosition(x, y+1)
+		break
 	case Right:
 		b.SetPosition(x+1, y)
+		break
 	case Left:
 		b.SetPosition(x-1, y)
+		break
+	default:
+		GameExplosion.CreateExplosion(x-1, y-1)
+		GameBullets.RemoveBullet(b)
+		break
+
 	}
 	b.speedCount = 1
 }

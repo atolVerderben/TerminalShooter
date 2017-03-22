@@ -52,12 +52,6 @@ func (npc *NPC) Update() {
 
 	NPCInformation.text.SetText(fmt.Sprintf("Enemy Health: %v", npc.Health))
 	if npc.isDead {
-		if GameOverInfo == nil {
-			GameOverInfo = NewEventInfo(0, 10)
-			GameOverInfo.center = true
-			npc.level.AddEntity(GameOverInfo)
-		}
-		GameOverInfo.text.SetText("You Win! Foes are Vanquished! Press Ctrl+C to Exit")
 		return
 	}
 	/*if npc.hasDestination {

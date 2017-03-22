@@ -67,6 +67,7 @@ func NewGame() *Game {
 func (g *Game) Run() {
 	rand.Seed(time.Now().Unix())
 	GameOverInfo = nil
+
 	//game := tl.NewGame()
 	Information = NewEventInfo(0, 0)
 	NPCInformation = NewEventInfo(50, 0)
@@ -81,6 +82,7 @@ func (g *Game) Run() {
 		Fg: tl.ColorWhite,
 		Ch: ' ',
 	})
+	GamePlayerManager = NewPlayerManager(level)
 
 	if g.ArenaSize == "large" {
 		GameArenaHeight = 100
@@ -107,7 +109,23 @@ func (g *Game) Run() {
 		level.AddEntity(NewWater(100, 10, 75, 35))
 
 		GamePlayer = CreatePlayer(20, 20, tl.ColorWhite, level)
-		GameNPC = CreateNPC(30, 50, tl.ColorMagenta, level)
+		for i := 0; i < 4; i++ {
+			switch i {
+			case 0:
+				GameNPCs = append(GameNPCs, CreateNPC(30, 50, tl.ColorMagenta, level))
+				break
+			case 1:
+				GameNPCs = append(GameNPCs, CreateNPC(190, 80, tl.ColorMagenta, level))
+				break
+			case 2:
+				GameNPCs = append(GameNPCs, CreateNPC(50, 75, tl.ColorMagenta, level))
+				break
+			case 3:
+				GameNPCs = append(GameNPCs, CreateNPC(190, 75, tl.ColorMagenta, level))
+				break
+			}
+		}
+
 		GameCamera = CreateCamera(-100, 0, 40, 10, level, 1)
 	}
 
@@ -131,12 +149,16 @@ func (g *Game) Run() {
 		level.AddEntity(tl.NewRectangle(0, 1, 1, 49, tl.ColorBlack))
 		level.AddEntity(tl.NewRectangle(99, 1, 1, 49, tl.ColorBlack))
 		GamePlayer = CreatePlayer(20, 20, tl.ColorWhite, level)
-		GameNPC = CreateNPC(40, 45, tl.ColorMagenta, level)
+		GameNPCs = append(GameNPCs, CreateNPC(40, 45, tl.ColorMagenta, level))
 		GameCamera = CreateCamera(-100, 0, 40, 10, level, 0)
 	}
 
 	level.AddEntity(GamePlayer)
-	level.AddEntity(GameNPC)
+	for _, npc := range GameNPCs {
+		level.AddEntity(npc)
+		GamePlayerManager.AddPlayer(npc)
+	}
+	GamePlayerManager.AddPlayer(GamePlayer)
 	GameBullets = CreateBulletController(level)
 
 	g.Screen().SetLevel(level)
@@ -167,16 +189,17 @@ var hey = 0
 //These are all the global actors of the game.
 //TODO: fit these into the Game object
 var (
-	GamePlayer      *Player
-	GameNPC         *NPC
-	GameCamera      *Camera
-	GameBullets     *BulletController
-	GameWorld       *World
-	GameExplosion   *ExplosionController
-	MainGame        *Game
-	GameArenaWidth  int
-	GameArenaHeight int
-	GameInput       *Input
+	GamePlayer        *Player
+	GameNPCs          []*NPC
+	GameCamera        *Camera
+	GameBullets       *BulletController
+	GameWorld         *World
+	GameExplosion     *ExplosionController
+	MainGame          *Game
+	GameArenaWidth    int
+	GameArenaHeight   int
+	GameInput         *Input
+	GamePlayerManager *PlayerManager
 )
 
 //UpdateLoop runs at close to 60 fps
@@ -201,17 +224,21 @@ func StopUpdate() {
 		GameLoop.Stop()
 	}
 	GamePlayer = nil
-	GameNPC = nil
 	GameCamera = nil
 	GameBullets = nil
 	GameWorld = nil
 	GameExplosion = nil
+	GameNPCs = nil
+	GamePlayerManager = nil
 }
 
 //Update runs all the updates when fired
 func Update(time time.Duration) {
-	GamePlayer.Update()
-	GameNPC.Update()
+	/*GamePlayer.Update()
+	for _, npc := range GameNPCs {
+		npc.Update()
+	}*/
+	GamePlayerManager.Update()
 	GameBullets.Update()
 	GameExplosion.Update()
 }

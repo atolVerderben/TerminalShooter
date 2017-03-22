@@ -4,9 +4,10 @@ import tl "github.com/JoelOtter/termloop"
 
 //EventInfo used primarly for debugging right now
 type EventInfo struct {
-	text   *tl.Text
-	right  bool
-	center bool
+	text             *tl.Text
+	right            bool
+	center           bool
+	OffsetX, OffsetY int
 }
 
 //NewEventInfo returns a new EventInfo...
@@ -27,7 +28,7 @@ func (info *EventInfo) Draw(screen *tl.Screen) {
 	if info.center { //TODO: Fix this to check for level offset!
 		w, h := info.text.Size()
 		screenWidth, screenHeight := screen.Size()
-		info.text.SetPosition(screenWidth/2-w, screenHeight/2-h/2)
+		info.text.SetPosition(screenWidth/2-w/2-info.OffsetX, screenHeight/2-h/2-info.OffsetY)
 	}
 	info.text.Draw(screen)
 }
