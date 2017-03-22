@@ -52,6 +52,7 @@ type Game struct {
 	ArenaSize   string
 	ArenaWidth  int
 	ArenaHeight int
+	inputType   int
 }
 
 //NewGame returns a new game
@@ -148,6 +149,7 @@ func (g *Game) Run() {
 		BaseLevel: level,
 		Grid:      ReadAStarFile("testmap.txt"),
 	}
+	GameInput = NewInput()
 	//go UpdateLoop()
 	g.Start()
 }
@@ -174,6 +176,7 @@ var (
 	MainGame        *Game
 	GameArenaWidth  int
 	GameArenaHeight int
+	GameInput       *Input
 )
 
 //UpdateLoop runs at close to 60 fps

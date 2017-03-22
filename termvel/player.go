@@ -84,7 +84,8 @@ func (player *Player) Update() {
 
 //Tick processes input and reactes accordingly
 func (player *Player) Tick(event tl.Event) {
-	player.PrevX, player.PrevY = player.Position()
+	GameInput.Tick(event, player)
+	/*player.PrevX, player.PrevY = player.Position()
 
 	if event.Type == tl.EventKey { // Is it a keyboard event?
 		switch event.Ch {
@@ -181,6 +182,6 @@ func (player *Player) Tick(event tl.Event) {
 
 		}
 		player.prevEvent = event
-	}
+	}*/
 
 }

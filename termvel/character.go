@@ -232,7 +232,11 @@ func (char *Character) Die() {
 	char.Health = 0
 	char.isDead = true
 	//☺☻☠
-	char.SetCell(0, 0, &tl.Cell{Fg: tl.ColorRed, Ch: '☺'})
+	if runtime.GOOS == "windows" {
+		char.SetCell(0, 0, &tl.Cell{Fg: tl.ColorRed, Ch: '☺'})
+	} else {
+		char.SetCell(0, 0, &tl.Cell{Fg: tl.ColorWhite, Ch: '☠'})
+	}
 }
 
 //Collide function to make Character DynamicPhysical and handle collision
