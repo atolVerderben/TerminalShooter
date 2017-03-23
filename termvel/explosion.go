@@ -36,7 +36,7 @@ func (ec *ExplosionController) CreateExplosion(x, y int) {
 func (e *Explosion) Update() {
 	e.exCount++
 	if e.exCount > 40 {
-		GameExplosion.RemoveExplosion(e)
+		TermGame.Arena.explosions.RemoveExplosion(e)
 	}
 }
 

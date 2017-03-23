@@ -82,10 +82,10 @@ func (input *Input) Tick(event tl.Event, player *Player) {
 				player.Face(Up)
 				break
 			case 'q':
-				GameBullets.DetonateAllBullets(player.Character)
+				TermGame.Arena.bullets.DetonateAllBullets(player.Character)
 				break
 			case 'e':
-				GameBullets.DetonateBullet(player.Character)
+				TermGame.Arena.bullets.DetonateBullet(player.Character)
 				break
 			}
 
@@ -114,13 +114,13 @@ func (input *Input) Tick(event tl.Event, player *Player) {
 				if player.shootCoolDown == 0 {
 					switch player.Facing {
 					case Up:
-						GameBullets.ShootBullet(player.PrevX, player.PrevY-2, player.shotColor, player.Facing, player.Character)
+						TermGame.Arena.bullets.ShootBullet(player.PrevX, player.PrevY-2, player.shotColor, player.Facing, player.Character)
 					case Down:
-						GameBullets.ShootBullet(player.PrevX, player.PrevY+2, player.shotColor, player.Facing, player.Character)
+						TermGame.Arena.bullets.ShootBullet(player.PrevX, player.PrevY+2, player.shotColor, player.Facing, player.Character)
 					case Left:
-						GameBullets.ShootBullet(player.PrevX-2, player.PrevY, player.shotColor, player.Facing, player.Character)
+						TermGame.Arena.bullets.ShootBullet(player.PrevX-2, player.PrevY, player.shotColor, player.Facing, player.Character)
 					case Right:
-						GameBullets.ShootBullet(player.PrevX+2, player.PrevY, player.shotColor, player.Facing, player.Character)
+						TermGame.Arena.bullets.ShootBullet(player.PrevX+2, player.PrevY, player.shotColor, player.Facing, player.Character)
 					}
 					player.bulletCount++
 					player.shootCoolDown = 1
@@ -183,10 +183,10 @@ func (input *Input) Tick(event tl.Event, player *Player) {
 				player.ClearPath()
 				break
 			case 'q':
-				GameBullets.DetonateAllBullets(player.Character)
+				TermGame.Arena.bullets.DetonateAllBullets(player.Character)
 				break
 			case 'e':
-				GameBullets.DetonateBullet(player.Character)
+				TermGame.Arena.bullets.DetonateBullet(player.Character)
 				break
 			}
 
@@ -214,13 +214,13 @@ func (input *Input) Tick(event tl.Event, player *Player) {
 				if player.shootCoolDown == 0 {
 					switch player.Facing {
 					case Up:
-						GameBullets.ShootBullet(player.PrevX, player.PrevY-2, player.shotColor, player.Facing, player.Character)
+						TermGame.Arena.bullets.ShootBullet(player.PrevX, player.PrevY-2, player.shotColor, player.Facing, player.Character)
 					case Down:
-						GameBullets.ShootBullet(player.PrevX, player.PrevY+2, player.shotColor, player.Facing, player.Character)
+						TermGame.Arena.bullets.ShootBullet(player.PrevX, player.PrevY+2, player.shotColor, player.Facing, player.Character)
 					case Left:
-						GameBullets.ShootBullet(player.PrevX-2, player.PrevY, player.shotColor, player.Facing, player.Character)
+						TermGame.Arena.bullets.ShootBullet(player.PrevX-2, player.PrevY, player.shotColor, player.Facing, player.Character)
 					case Right:
-						GameBullets.ShootBullet(player.PrevX+2, player.PrevY, player.shotColor, player.Facing, player.Character)
+						TermGame.Arena.bullets.ShootBullet(player.PrevX+2, player.PrevY, player.shotColor, player.Facing, player.Character)
 					}
 					player.bulletCount++
 					player.shootCoolDown = 1
@@ -269,13 +269,13 @@ func (input *Input) Tick(event tl.Event, player *Player) {
 				if player.shootCoolDown == 0 {
 					switch player.Facing {
 					case Up:
-						GameBullets.ShootBullet(player.PrevX, player.PrevY-2, player.shotColor, player.Facing, player.Character)
+						TermGame.Arena.bullets.ShootBullet(player.PrevX, player.PrevY-2, player.shotColor, player.Facing, player.Character)
 					case Down:
-						GameBullets.ShootBullet(player.PrevX, player.PrevY+2, player.shotColor, player.Facing, player.Character)
+						TermGame.Arena.bullets.ShootBullet(player.PrevX, player.PrevY+2, player.shotColor, player.Facing, player.Character)
 					case Left:
-						GameBullets.ShootBullet(player.PrevX-2, player.PrevY, player.shotColor, player.Facing, player.Character)
+						TermGame.Arena.bullets.ShootBullet(player.PrevX-2, player.PrevY, player.shotColor, player.Facing, player.Character)
 					case Right:
-						GameBullets.ShootBullet(player.PrevX+2, player.PrevY, player.shotColor, player.Facing, player.Character)
+						TermGame.Arena.bullets.ShootBullet(player.PrevX+2, player.PrevY, player.shotColor, player.Facing, player.Character)
 					}
 					player.bulletCount++
 					player.shootCoolDown = 1

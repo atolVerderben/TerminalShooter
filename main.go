@@ -59,7 +59,7 @@ func main() {
 			break
 		}
 		g.Run()
-		termvel.StopUpdate()
+		g.StopUpdate()
 		fmt.Println("")
 		fmt.Println("")
 		fmt.Println("=======================================================================")

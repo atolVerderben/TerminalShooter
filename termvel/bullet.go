@@ -79,8 +79,8 @@ func (bc *BulletController) DetonateBullet(char *Character) {
 	for _, b := range bc.bullets {
 		if b.owner == char {
 			x, y := b.Position()
-			GameExplosion.CreateExplosion(x-1, y-1)
-			GameBullets.RemoveBullet(b)
+			TermGame.Arena.explosions.CreateExplosion(x-1, y-1)
+			bc.RemoveBullet(b)
 			return
 		}
 	}
@@ -92,14 +92,14 @@ func (bc *BulletController) DetonateAllBullets(char *Character) {
 	for _, b := range bc.bullets {
 		if b.owner == char {
 			x, y := b.Position()
-			GameExplosion.CreateExplosion(x-1, y-1)
+			TermGame.Arena.explosions.CreateExplosion(x-1, y-1)
 			delList = append(delList, b)
 
 		}
 	}
 
 	for _, b := range delList {
-		GameBullets.RemoveBullet(b)
+		bc.RemoveBullet(b)
 	}
 }
 
@@ -129,8 +129,6 @@ func (b *Bullet) Update() {
 		b.SetPosition(x-1, y)
 		break
 	default:
-		GameExplosion.CreateExplosion(x-1, y-1)
-		GameBullets.RemoveBullet(b)
 		break
 
 	}
@@ -144,16 +142,16 @@ func (b *Bullet) Collide(collision tl.Physical) {
 		// Check if it's a Rectangle we're colliding with
 		if _, ok := collision.(*tl.Rectangle); ok {
 			x, y := b.Position()
-			GameExplosion.CreateExplosion(x-1, y-1)
-			GameBullets.RemoveBullet(b)
+			TermGame.Arena.explosions.CreateExplosion(x-1, y-1)
+			TermGame.Arena.bullets.RemoveBullet(b)
 
 		}
 
 		if _, ok := collision.(*NPC); ok {
-			GameBullets.RemoveBullet(b)
+			TermGame.Arena.bullets.RemoveBullet(b)
 		}
 		if _, ok := collision.(*Player); ok {
-			GameBullets.RemoveBullet(b)
+			TermGame.Arena.bullets.RemoveBullet(b)
 		}
 	}
 }

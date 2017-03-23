@@ -112,8 +112,8 @@ func (npc *NPC) Update() {
 				if npc.hasDestination {
 					npc.ClearPath()
 				}
-				numX := rand.Intn(GameArenaWidth)
-				numY := rand.Intn(GameArenaHeight)
+				numX := rand.Intn(TermGame.Arena.arena.Width)
+				numY := rand.Intn(TermGame.Arena.arena.Height)
 				npc.DestX = numX
 				npc.DestY = numY
 				npc.hasDestination = true
@@ -123,13 +123,13 @@ func (npc *NPC) Update() {
 		if rand.Intn(20) == 14 && npc.shootCoolDown == 0 {
 			switch npc.Facing {
 			case Up:
-				GameBullets.ShootBullet(npc.PrevX, npc.PrevY-2, tl.ColorRed, npc.Facing, npc.Character)
+				TermGame.Arena.bullets.ShootBullet(npc.PrevX, npc.PrevY-2, tl.ColorRed, npc.Facing, npc.Character)
 			case Down:
-				GameBullets.ShootBullet(npc.PrevX, npc.PrevY+2, tl.ColorRed, npc.Facing, npc.Character)
+				TermGame.Arena.bullets.ShootBullet(npc.PrevX, npc.PrevY+2, tl.ColorRed, npc.Facing, npc.Character)
 			case Left:
-				GameBullets.ShootBullet(npc.PrevX-2, npc.PrevY, tl.ColorRed, npc.Facing, npc.Character)
+				TermGame.Arena.bullets.ShootBullet(npc.PrevX-2, npc.PrevY, tl.ColorRed, npc.Facing, npc.Character)
 			case Right:
-				GameBullets.ShootBullet(npc.PrevX+2, npc.PrevY, tl.ColorRed, npc.Facing, npc.Character)
+				TermGame.Arena.bullets.ShootBullet(npc.PrevX+2, npc.PrevY, tl.ColorRed, npc.Facing, npc.Character)
 			}
 			npc.shootCoolDown = 1
 		}

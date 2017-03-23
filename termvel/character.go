@@ -135,17 +135,17 @@ func (char *Character) Update() {
 	if char.hasDestination {
 		if char.Path == nil && char.pathDestination == nil {
 			x, y := char.Position()
-			if char.DestX <= 0 || char.DestX >= GameArenaWidth || char.DestY <= 0 || char.DestY >= GameArenaHeight {
+			if char.DestX <= 0 || char.DestX >= TermGame.Arena.arena.Width || char.DestY <= 0 || char.DestY >= TermGame.Arena.arena.Height {
 				char.hasDestination = false
 				return
 			}
-			originalTile := GameWorld.Grid.PathTile(x, y).Kind
+			//originalTile := GameWorld.Grid.PathTile(x, y).Kind
 
-			GameWorld.Grid.SetPathTile(&PathTile{
+			/*GameWorld.Grid.SetPathTile(&PathTile{
 				Kind: KindFrom,
-			}, x, y)
+			}, x, y)*/
 
-			toTile, fromTile := GameWorld.Grid.PathTile(char.DestX, char.DestY), GameWorld.Grid.PathTile(x, y)
+			toTile, fromTile := TermGame.Arena.arena.Grid.PathTile(char.DestX, char.DestY), TermGame.Arena.arena.Grid.PathTile(x, y)
 			if toTile == nil {
 				char.hasDestination = false
 				return
@@ -174,9 +174,9 @@ func (char *Character) Update() {
 				}
 			}
 			//Set back the original tilekind
-			GameWorld.Grid.SetPathTile(&PathTile{
+			/*GameWorld.Grid.SetPathTile(&PathTile{
 				Kind: originalTile,
-			}, x, y)
+			}, x, y)*/
 
 		}
 
@@ -291,7 +291,7 @@ func (char *Character) ClearPath() {
 //InDanger checks if the character is in danger of being hit by a bullets and react.
 //TODO: include explosions
 func (char *Character) InDanger() {
-	for _, b := range GameBullets.bullets {
+	for _, b := range TermGame.Arena.bullets.bullets {
 		if b.owner == char {
 			continue
 		}

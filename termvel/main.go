@@ -49,17 +49,57 @@ func Select(x, y int) bool {
 //Game will represent the overall game
 type Game struct {
 	*tl.Game
-	ArenaSize   string
-	ArenaWidth  int
-	ArenaHeight int
-	inputType   int
+	ArenaSize          string
+	ArenaWidth         int
+	ArenaHeight        int
+	inputType          int
+	Msg                GameMessage
+	loop               *time.Ticker
+	currentState       GameState
+	states             []GameState
+	player             *Player
+	playermanager      *PlayerManager
+	input              *Input
+	currTime, lastTime time.Time
+	Arena              *Arena
+}
+
+type GameMessage int
+
+const (
+	MsgNone GameMessage = iota
+	MsgStartMain
+	MsgEndGame
+)
+
+func (g *Game) gameLoop() {
+	g.loop = time.NewTicker(time.Millisecond * 17) //roughly 60fps (16.67)
+	for {
+		if GamePlayer == nil {
+			g.loop.Stop()
+			return
+		}
+		switch g.Msg {
+		case MsgStartMain:
+
+			break
+		}
+		g.currentState.Update(g)
+		g.currTime = time.Now()
+		//Update(time.Since(lastTime))
+		g.lastTime = g.currTime
+		<-g.loop.C
+	}
+
 }
 
 //NewGame returns a new game
 func NewGame() *Game {
 	g := &Game{
-		Game: tl.NewGame(),
+		Game:  tl.NewGame(),
+		Arena: CreateArena(),
 	}
+	g.currentState = g.Arena
 	return g
 }
 
@@ -67,6 +107,8 @@ func NewGame() *Game {
 func (g *Game) Run() {
 	rand.Seed(time.Now().Unix())
 	GameOverInfo = nil
+	//TODO: Fix this nonsense here too
+	TermGame = g
 
 	//game := tl.NewGame()
 	Information = NewEventInfo(0, 0)
@@ -78,36 +120,14 @@ func (g *Game) Run() {
 
 	//game.Screen().AddEntity(tl.NewFpsText(0, 1, tl.ColorWhite, tl.ColorBlack, .2))
 	level := tl.NewBaseLevel(tl.Cell{
-		Bg: tl.ColorBlue,
+		Bg: tl.ColorWhite,
 		Fg: tl.ColorWhite,
 		Ch: ' ',
 	})
-	GamePlayerManager = NewPlayerManager(level)
 
 	if g.ArenaSize == "large" {
-		GameArenaHeight = 100
-		GameArenaWidth = 200
-
-		//Add clickable terrain
-		for i := 0; i < 200; i++ {
-			row := []*Clickable{}
-			for j := 0; j < 100; j++ {
-				click := NewClickable(i, j, 1, 1, tl.ColorGreen, level)
-				level.AddEntity(click)
-				row = append(row, click)
-			}
-			Clickables = append(Clickables, row)
-		}
-
-		//Level "Bounds"
-		level.AddEntity(tl.NewRectangle(0, 0, 200, 1, tl.ColorDefault))
-		level.AddEntity(tl.NewRectangle(0, 99, 200, 1, tl.ColorBlack))
-		level.AddEntity(tl.NewRectangle(0, 1, 1, 99, tl.ColorBlack))
-		level.AddEntity(tl.NewRectangle(199, 1, 1, 99, tl.ColorBlack))
-
-		//Lake
-		level.AddEntity(NewWater(100, 10, 75, 35))
-
+		g.Arena.createLargeArena()
+		level = g.Arena.arena.BaseLevel
 		GamePlayer = CreatePlayer(20, 20, tl.ColorWhite, level)
 		for i := 0; i < 4; i++ {
 			switch i {
@@ -130,121 +150,67 @@ func (g *Game) Run() {
 	}
 
 	if g.ArenaSize == "small" {
-		GameArenaHeight = 50
-		GameArenaWidth = 100
-		//Add clickable terrain
-		for i := 0; i < 100; i++ {
-			row := []*Clickable{}
-			for j := 0; j < 50; j++ {
-				click := NewClickable(i, j, 1, 1, tl.ColorGreen, level)
-				level.AddEntity(click)
-				row = append(row, click)
-			}
-			Clickables = append(Clickables, row)
-		}
-
-		//Level "Bounds"
-		level.AddEntity(tl.NewRectangle(0, 0, 100, 1, tl.ColorBlack))
-		level.AddEntity(tl.NewRectangle(0, 49, 100, 1, tl.ColorBlack))
-		level.AddEntity(tl.NewRectangle(0, 1, 1, 49, tl.ColorBlack))
-		level.AddEntity(tl.NewRectangle(99, 1, 1, 49, tl.ColorBlack))
-		GamePlayer = CreatePlayer(20, 20, tl.ColorWhite, level)
-		GameNPCs = append(GameNPCs, CreateNPC(40, 45, tl.ColorMagenta, level))
-		GameCamera = CreateCamera(-100, 0, 40, 10, level, 0)
+		g.Arena.createSmallArena()
+		GamePlayer = CreatePlayer(20, 20, tl.ColorWhite, g.Arena.arena.BaseLevel)
+		GameNPCs = append(GameNPCs, CreateNPC(40, 45, tl.ColorMagenta, g.Arena.arena.BaseLevel))
+		GameCamera = CreateCamera(-100, 0, 40, 10, g.Arena.arena.BaseLevel, 0)
+		level = g.Arena.arena.BaseLevel
 	}
-
+	g.playermanager = NewPlayerManager(level)
 	level.AddEntity(GamePlayer)
 	for _, npc := range GameNPCs {
 		level.AddEntity(npc)
-		GamePlayerManager.AddPlayer(npc)
+		g.playermanager.AddPlayer(npc)
 	}
-	GamePlayerManager.AddPlayer(GamePlayer)
-	GameBullets = CreateBulletController(level)
+	g.playermanager.AddPlayer(GamePlayer)
+	//GameBullets = CreateBulletController(level)
 
-	g.Screen().SetLevel(level)
+	//g.Screen().SetLevel(level)
 	screenWidth, screenHeight := g.Screen().Size()
 	x, y := GamePlayer.Position()
 	level.SetOffset(screenWidth/2-x, screenHeight/2-y)
 
-	GameExplosion = CreateExplosionController(level)
-	GameWorld = &World{
+	//GameExplosion = CreateExplosionController(level)
+	/*GameWorld = &World{
 		BaseLevel: level,
 		Grid:      ReadAStarFile("testmap.txt"),
-	}
-	GameInput = NewInput()
-	//go UpdateLoop()
+	}*/
+	g.player = GamePlayer
+	g.input = NewInput()
+
 	g.Start()
 }
 
 //Start the game... overrides termloop
 func (g *Game) Start() {
-	go UpdateLoop()
+	go g.gameLoop()
 	g.Game.Start()
 }
-
-//GameLoop is the update loop of the game naturally....
-var GameLoop *time.Ticker
-var hey = 0
 
 //These are all the global actors of the game.
 //TODO: fit these into the Game object
 var (
-	GamePlayer        *Player
-	GameNPCs          []*NPC
-	GameCamera        *Camera
-	GameBullets       *BulletController
-	GameWorld         *World
-	GameExplosion     *ExplosionController
-	MainGame          *Game
-	GameArenaWidth    int
-	GameArenaHeight   int
-	GameInput         *Input
-	GamePlayerManager *PlayerManager
+	GamePlayer *Player
+	GameNPCs   []*NPC
+	GameCamera *Camera
+	//GameBullets     *BulletController
+	//GameWorld *World
+	//GameExplosion   *ExplosionController
+
+	TermGame *Game
 )
 
-//UpdateLoop runs at close to 60 fps
-func UpdateLoop() {
-	GameLoop := time.NewTicker(time.Millisecond * 17) //roughly 60fps (16.67)
-	for {
-		if GamePlayer == nil {
-			GameLoop.Stop()
-			return
-		}
-		currTime = time.Now()
-		Update(time.Since(lastTime))
-		lastTime = currTime
-		<-GameLoop.C
-	}
-
-}
-
 //StopUpdate stops what was happening in the previous round/game
-func StopUpdate() {
-	if GameLoop != nil {
-		GameLoop.Stop()
+func (g *Game) StopUpdate() {
+	if g.loop != nil {
+		g.loop.Stop()
 	}
 	GamePlayer = nil
 	GameCamera = nil
-	GameBullets = nil
-	GameWorld = nil
-	GameExplosion = nil
+	//GameWorld = nil
 	GameNPCs = nil
-	GamePlayerManager = nil
+	g.playermanager = nil
 }
-
-//Update runs all the updates when fired
-func Update(time time.Duration) {
-	/*GamePlayer.Update()
-	for _, npc := range GameNPCs {
-		npc.Update()
-	}*/
-	GamePlayerManager.Update()
-	GameBullets.Update()
-	GameExplosion.Update()
-}
-
-var currTime = time.Now()
-var lastTime = currTime
 
 //Point is a coordinate the character is moving to
 type Point struct {

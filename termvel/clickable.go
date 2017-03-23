@@ -19,7 +19,6 @@ func NewClickable(x, y, w, h int, col tl.Attr, level *tl.BaseLevel) *Clickable {
 		entity: tl.NewEntity(x, y, w, h),
 		level:  level,
 	}
-
 	num := rand.Intn(50)
 	if num == 13 {
 		click.entity.SetCell(0, 0, &tl.Cell{Fg: col, Bg: tl.ColorBlack, Ch: '\''})

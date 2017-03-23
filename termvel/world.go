@@ -51,5 +51,6 @@ func readLines(path string) ([]string, error) {
 //World represents both the drawn level and the a* world for pathfinding
 type World struct {
 	*tl.BaseLevel
-	Grid *WorldGrid
+	Grid          *WorldGrid
+	Height, Width int
 } //⚰️
