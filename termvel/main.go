@@ -67,7 +67,7 @@ type Game struct {
 func (g *Game) gameLoop() {
 	g.loop = time.NewTicker(time.Millisecond * 17) //roughly 60fps (16.67)
 	for {
-		if GamePlayer == nil {
+		if g.player == nil {
 			g.loop.Stop()
 			return
 		}
@@ -102,8 +102,8 @@ func (g *Game) Run() {
 	GameOverInfo = nil
 	//TODO: Fix this nonsense here too
 	TermGame = g
-	GamePlayer = CreatePlayer(20, 20, tl.ColorWhite, nil)
-	g.player = GamePlayer
+	g.player = CreatePlayer(20, 20, tl.ColorWhite, nil)
+
 	//game := tl.NewGame()
 	Information = NewEventInfo(0, 0)
 	NPCInformation = NewEventInfo(50, 0)
@@ -142,7 +142,7 @@ func (g *Game) Start() {
 //These are all the global actors of the game.
 //TODO: fit these into the Game object
 var (
-	GamePlayer *Player
+	//GamePlayer *Player
 	//GameNPCs   []*NPC
 	//GameCamera *Camera
 	//GameBullets     *BulletController
@@ -157,7 +157,7 @@ func (g *Game) StopUpdate() {
 	if g.loop != nil {
 		g.loop.Stop()
 	}
-	GamePlayer = nil
+	g.player = nil
 	//GameCamera = nil
 	//GameWorld = nil
 	//GameNPCs = nil

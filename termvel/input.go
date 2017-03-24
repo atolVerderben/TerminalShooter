@@ -42,11 +42,12 @@ func NewInput() *Input {
 	return i
 }
 
+//Tick process when key pressed
 func (input *Input) Tick(event tl.Event) {
 	input.Update(event, TermGame.player)
 }
 
-//Tick fires an Input Tick Event
+//Update fires an Input Tick Event
 func (input *Input) Update(event tl.Event, player *Player) {
 	player.PrevX, player.PrevY = player.Position()
 	switch gs := input.gameState.(type) {
@@ -57,8 +58,7 @@ func (input *Input) Update(event tl.Event, player *Player) {
 
 }
 
-func (input *Input) Draw(screen *tl.Screen) {}
-
+//UpdateGamePlay is used for the actual game
 func (input *Input) UpdateGamePlay(event tl.Event, player *Player, gs *Arena) {
 	if event.Type == tl.EventKey {
 		switch event.Ch {

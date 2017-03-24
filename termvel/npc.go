@@ -24,7 +24,7 @@ func CreateNPC(x, y int, color tl.Attr, level *tl.BaseLevel) *NPC {
 		Character: CreateCharacter(x, y, color, level),
 		update:    .2,
 		level:     level,
-		Target:    GamePlayer.Character,
+		Target:    TermGame.player.Character,
 	}
 
 	//npc.entity.SetCell(0, 0, &tl.Cell{Fg: color, Ch: '☻'})
