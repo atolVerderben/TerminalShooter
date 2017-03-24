@@ -32,11 +32,16 @@ func CreatePlayer(x, y int, color tl.Attr, level *tl.BaseLevel) *Player {
 	return player
 }
 
+//SetLevel for the player
+func (player *Player) SetLevel(level *tl.BaseLevel) {
+	player.level = level
+}
+
 //Draw the player at each frame
 func (player *Player) Draw(screen *tl.Screen) {
 	player.time += screen.TimeDelta()
 	x, y := player.Position()
-	GameCamera.Update(screen, player.Character)
+	//GameCamera.Update(screen, player.Character)
 	if player.time > player.update {
 		player.PrevX = x
 		player.PrevY = y
@@ -74,5 +79,5 @@ func (player *Player) Update() {
 
 //Tick processes input and reactes accordingly
 func (player *Player) Tick(event tl.Event) {
-	TermGame.input.Tick(event, player)
+
 }

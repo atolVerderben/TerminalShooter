@@ -64,14 +64,6 @@ type Game struct {
 	Arena              *Arena
 }
 
-type GameMessage int
-
-const (
-	MsgNone GameMessage = iota
-	MsgStartMain
-	MsgEndGame
-)
-
 func (g *Game) gameLoop() {
 	g.loop = time.NewTicker(time.Millisecond * 17) //roughly 60fps (16.67)
 	for {
@@ -84,9 +76,10 @@ func (g *Game) gameLoop() {
 
 			break
 		}
-		g.currentState.Update(g)
+		g.input.gameState = g.currentState
 		g.currTime = time.Now()
-		//Update(time.Since(lastTime))
+		g.Msg = g.currentState.Update(g)
+		//Update(time.Since(lastTime)) //TODO Saving this as a reminder to go back and use delta time maybe(?)
 		g.lastTime = g.currTime
 		<-g.loop.C
 	}
@@ -99,7 +92,7 @@ func NewGame() *Game {
 		Game:  tl.NewGame(),
 		Arena: CreateArena(),
 	}
-	g.currentState = g.Arena
+	g.currentState = g.Arena //CreateMainMenu() //g.Arena
 	return g
 }
 
@@ -109,7 +102,8 @@ func (g *Game) Run() {
 	GameOverInfo = nil
 	//TODO: Fix this nonsense here too
 	TermGame = g
-
+	GamePlayer = CreatePlayer(20, 20, tl.ColorWhite, nil)
+	g.player = GamePlayer
 	//game := tl.NewGame()
 	Information = NewEventInfo(0, 0)
 	NPCInformation = NewEventInfo(50, 0)
@@ -119,65 +113,23 @@ func (g *Game) Run() {
 	g.Screen().SetFps(60)
 
 	//game.Screen().AddEntity(tl.NewFpsText(0, 1, tl.ColorWhite, tl.ColorBlack, .2))
-	level := tl.NewBaseLevel(tl.Cell{
-		Bg: tl.ColorWhite,
-		Fg: tl.ColorWhite,
-		Ch: ' ',
-	})
 
 	if g.ArenaSize == "large" {
 		g.Arena.createLargeArena()
-		level = g.Arena.arena.BaseLevel
-		GamePlayer = CreatePlayer(20, 20, tl.ColorWhite, level)
-		for i := 0; i < 4; i++ {
-			switch i {
-			case 0:
-				GameNPCs = append(GameNPCs, CreateNPC(30, 50, tl.ColorMagenta, level))
-				break
-			case 1:
-				GameNPCs = append(GameNPCs, CreateNPC(190, 80, tl.ColorMagenta, level))
-				break
-			case 2:
-				GameNPCs = append(GameNPCs, CreateNPC(50, 75, tl.ColorMagenta, level))
-				break
-			case 3:
-				GameNPCs = append(GameNPCs, CreateNPC(190, 75, tl.ColorMagenta, level))
-				break
-			}
-		}
 
-		GameCamera = CreateCamera(-100, 0, 40, 10, level, 1)
 	}
 
 	if g.ArenaSize == "small" {
 		g.Arena.createSmallArena()
-		GamePlayer = CreatePlayer(20, 20, tl.ColorWhite, g.Arena.arena.BaseLevel)
-		GameNPCs = append(GameNPCs, CreateNPC(40, 45, tl.ColorMagenta, g.Arena.arena.BaseLevel))
-		GameCamera = CreateCamera(-100, 0, 40, 10, g.Arena.arena.BaseLevel, 0)
-		level = g.Arena.arena.BaseLevel
-	}
-	g.playermanager = NewPlayerManager(level)
-	level.AddEntity(GamePlayer)
-	for _, npc := range GameNPCs {
-		level.AddEntity(npc)
-		g.playermanager.AddPlayer(npc)
-	}
-	g.playermanager.AddPlayer(GamePlayer)
-	//GameBullets = CreateBulletController(level)
 
-	//g.Screen().SetLevel(level)
-	screenWidth, screenHeight := g.Screen().Size()
-	x, y := GamePlayer.Position()
-	level.SetOffset(screenWidth/2-x, screenHeight/2-y)
+	}
 
 	//GameExplosion = CreateExplosionController(level)
 	/*GameWorld = &World{
 		BaseLevel: level,
 		Grid:      ReadAStarFile("testmap.txt"),
 	}*/
-	g.player = GamePlayer
 	g.input = NewInput()
-
 	g.Start()
 }
 
@@ -191,8 +143,8 @@ func (g *Game) Start() {
 //TODO: fit these into the Game object
 var (
 	GamePlayer *Player
-	GameNPCs   []*NPC
-	GameCamera *Camera
+	//GameNPCs   []*NPC
+	//GameCamera *Camera
 	//GameBullets     *BulletController
 	//GameWorld *World
 	//GameExplosion   *ExplosionController
@@ -206,9 +158,9 @@ func (g *Game) StopUpdate() {
 		g.loop.Stop()
 	}
 	GamePlayer = nil
-	GameCamera = nil
+	//GameCamera = nil
 	//GameWorld = nil
-	GameNPCs = nil
+	//GameNPCs = nil
 	g.playermanager = nil
 }
 

@@ -8,8 +8,10 @@ import (
 
 //Input represents the player input
 type Input struct {
-	Keys   map[string]tl.Key
-	scheme int
+	Keys      map[string]tl.Key
+	scheme    int
+	gameState GameState
+	*tl.Entity
 }
 
 //Different input types
@@ -22,7 +24,8 @@ const (
 //NewInput returns the default Input struct
 func NewInput() *Input {
 	i := &Input{
-		Keys: map[string]tl.Key{},
+		Keys:   map[string]tl.Key{},
+		Entity: tl.NewEntity(0, 0, 0, 0),
 	}
 
 	i.Keys["Up"] = tl.KeyCtrlW
@@ -35,13 +38,28 @@ func NewInput() *Input {
 	i.Keys["AimLeft"] = tl.KeyArrowLeft
 	i.Keys["AimRight"] = tl.KeyArrowRight
 	i.scheme = 1
-
+	TermGame.Screen().AddEntity(i)
 	return i
 }
 
+func (input *Input) Tick(event tl.Event) {
+	input.Update(event, TermGame.player)
+}
+
 //Tick fires an Input Tick Event
-func (input *Input) Tick(event tl.Event, player *Player) {
+func (input *Input) Update(event tl.Event, player *Player) {
 	player.PrevX, player.PrevY = player.Position()
+	switch gs := input.gameState.(type) {
+	case *Arena:
+		input.UpdateGamePlay(event, player, gs)
+		break
+	}
+
+}
+
+func (input *Input) Draw(screen *tl.Screen) {}
+
+func (input *Input) UpdateGamePlay(event tl.Event, player *Player, gs *Arena) {
 	if event.Type == tl.EventKey {
 		switch event.Ch {
 		case '1':
@@ -107,9 +125,9 @@ func (input *Input) Tick(event tl.Event, player *Player) {
 				player.ClearPath()
 				break
 			case tl.KeyBackspace2:
-				GameCamera.CenterOn(player.Character)
+				gs.camera.CenterOn(player.Character)
 			case tl.KeyBackspace:
-				GameCamera.CenterOn(player.Character)
+				gs.camera.CenterOn(player.Character)
 			case tl.KeySpace:
 				if player.shootCoolDown == 0 {
 					switch player.Facing {
@@ -206,9 +224,9 @@ func (input *Input) Tick(event tl.Event, player *Player) {
 				player.Face(Down)
 				break
 			case tl.KeyBackspace2:
-				GameCamera.CenterOn(player.Character)
+				gs.camera.CenterOn(player.Character)
 			case tl.KeyBackspace:
-				GameCamera.CenterOn(player.Character)
+				gs.camera.CenterOn(player.Character)
 
 			case tl.KeySpace:
 				if player.shootCoolDown == 0 {
@@ -298,5 +316,4 @@ func (input *Input) Tick(event tl.Event, player *Player) {
 		}
 		break
 	}
-
 }
