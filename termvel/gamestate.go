@@ -14,6 +14,7 @@ type GameMessage int
 //Available GameMessages
 const (
 	MsgNone GameMessage = iota
-	MsgStartMain
+	MsgStartMainSmall
+	MsgStartMainLarge
 	MsgEndGame
 )

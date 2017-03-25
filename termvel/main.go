@@ -72,8 +72,14 @@ func (g *Game) gameLoop() {
 			return
 		}
 		switch g.Msg {
-		case MsgStartMain:
+		case MsgStartMainSmall:
+			g.currentState = g.Arena
+			g.Arena.createSmallArena()
+			break
 
+		case MsgStartMainLarge:
+			g.currentState = g.Arena
+			g.Arena.createLargeArena()
 			break
 		}
 		g.input.gameState = g.currentState
@@ -92,7 +98,7 @@ func NewGame() *Game {
 		Game:  tl.NewGame(),
 		Arena: CreateArena(),
 	}
-	g.currentState = g.Arena //CreateMainMenu() //g.Arena
+	g.currentState = CreateMainMenu() //g.Arena
 	return g
 }
 
@@ -113,17 +119,21 @@ func (g *Game) Run() {
 	g.Screen().SetFps(60)
 
 	//game.Screen().AddEntity(tl.NewFpsText(0, 1, tl.ColorWhite, tl.ColorBlack, .2))
+	/*
+		if g.ArenaSize == "large" {
+			g.Arena.createLargeArena()
 
-	if g.ArenaSize == "large" {
-		g.Arena.createLargeArena()
+		}
 
+		if g.ArenaSize == "small" {
+			g.Arena.createSmallArena()
+
+		}
+	*/
+	switch cs := g.currentState.(type) {
+	case *MainMenu:
+		cs.ShowMainMenu(g)
 	}
-
-	if g.ArenaSize == "small" {
-		g.Arena.createSmallArena()
-
-	}
-
 	//GameExplosion = CreateExplosionController(level)
 	/*GameWorld = &World{
 		BaseLevel: level,

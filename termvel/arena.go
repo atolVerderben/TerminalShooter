@@ -10,6 +10,7 @@ type Arena struct {
 	explosions    *ExplosionController
 	playermanager *PlayerManager
 	camera        *Camera
+	msg           GameMessage
 }
 
 //CreateArena returns an Arena pointer
@@ -19,7 +20,8 @@ func CreateArena() *Arena {
 			Bg: tl.ColorWhite,
 			Fg: tl.ColorWhite,
 			Ch: ' ',
-		})}
+		}),
+		msg: MsgNone}
 	return a
 }
 
@@ -149,7 +151,7 @@ func (a *Arena) Update(g *Game) GameMessage {
 	if a.explosions != nil {
 		a.explosions.Update()
 	}
-	return MsgNone
+	return a.msg
 }
 
 //ReturnLevel returns the base level
