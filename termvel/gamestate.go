@@ -6,6 +6,7 @@ import tl "github.com/JoelOtter/termloop"
 type GameState interface {
 	Update(*Game) GameMessage
 	ReturnLevel() *tl.BaseLevel
+	SetMessage(GameMessage)
 }
 
 //GameMessage signals when to switch between states
@@ -16,5 +17,6 @@ const (
 	MsgNone GameMessage = iota
 	MsgStartMainSmall
 	MsgStartMainLarge
+	MsgMainMenu
 	MsgEndGame
 )

@@ -50,6 +50,18 @@ func CreateCharacter(x, y int, color tl.Attr, level *tl.BaseLevel) *Character {
 	return char
 }
 
+//Reset is used to set the character back to the "beginning" state
+func (char *Character) Reset() {
+	char.Health = 6
+	char.isDead = false
+	char.Facing = Right
+	if runtime.GOOS == "windows" {
+		char.SetCell(0, 0, &tl.Cell{Fg: char.color, Ch: '☻'})
+	} else {
+		char.SetCell(0, 0, &tl.Cell{Fg: char.color, Ch: '옷'}) // that unicode isn't usually present on windows
+	}
+}
+
 //Move in the specified direction
 func (char *Character) Move(dir Direction) {
 	if char.moveCooldown == 0 {

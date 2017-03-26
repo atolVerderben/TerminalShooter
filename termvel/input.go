@@ -85,6 +85,12 @@ func (input *Input) UpdateGamePlay(event tl.Event, player *Player, gs *Arena) {
 		}
 
 		switch event.Key {
+		case tl.KeyEsc:
+			input.gameState.SetMessage(MsgMainMenu)
+			break
+		case tl.KeyCtrlQ:
+			input.gameState.SetMessage(MsgMainMenu)
+			break
 		case tl.KeyTab:
 			//GameCamera.CenterOn(player.Character)
 			switch input.scheme {

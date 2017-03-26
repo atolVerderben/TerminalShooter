@@ -56,7 +56,7 @@ type Game struct {
 	Msg                GameMessage
 	loop               *time.Ticker
 	currentState       GameState
-	states             []GameState
+	states             map[string]GameState
 	player             *Player
 	playermanager      *PlayerManager
 	input              *Input
@@ -75,11 +75,18 @@ func (g *Game) gameLoop() {
 		case MsgStartMainSmall:
 			g.currentState = g.Arena
 			g.Arena.createSmallArena()
+			g.Arena.SetMessage(MsgNone)
 			break
 
 		case MsgStartMainLarge:
 			g.currentState = g.Arena
 			g.Arena.createLargeArena()
+			g.Arena.SetMessage(MsgNone)
+			break
+		case MsgMainMenu:
+			g.currentState = g.states["MainMenu"]
+			g.Screen().SetLevel(g.currentState.ReturnLevel())
+			g.currentState.SetMessage(MsgNone)
 			break
 		}
 		g.input.gameState = g.currentState
@@ -95,10 +102,12 @@ func (g *Game) gameLoop() {
 //NewGame returns a new game
 func NewGame() *Game {
 	g := &Game{
-		Game:  tl.NewGame(),
-		Arena: CreateArena(),
+		Game:   tl.NewGame(),
+		Arena:  CreateArena(),
+		states: map[string]GameState{},
 	}
-	g.currentState = CreateMainMenu() //g.Arena
+	g.states["MainMenu"] = CreateMainMenu()
+	g.currentState = g.states["MainMenu"] //g.Arena
 	return g
 }
 
@@ -110,35 +119,16 @@ func (g *Game) Run() {
 	TermGame = g
 	g.player = CreatePlayer(20, 20, tl.ColorWhite, nil)
 
-	//game := tl.NewGame()
 	Information = NewEventInfo(0, 0)
 	NPCInformation = NewEventInfo(50, 0)
 	NPCInformation.right = true
 	g.Screen().AddEntity(Information)
 	g.Screen().AddEntity(NPCInformation)
 	g.Screen().SetFps(60)
-
-	//game.Screen().AddEntity(tl.NewFpsText(0, 1, tl.ColorWhite, tl.ColorBlack, .2))
-	/*
-		if g.ArenaSize == "large" {
-			g.Arena.createLargeArena()
-
-		}
-
-		if g.ArenaSize == "small" {
-			g.Arena.createSmallArena()
-
-		}
-	*/
 	switch cs := g.currentState.(type) {
 	case *MainMenu:
 		cs.ShowMainMenu(g)
 	}
-	//GameExplosion = CreateExplosionController(level)
-	/*GameWorld = &World{
-		BaseLevel: level,
-		Grid:      ReadAStarFile("testmap.txt"),
-	}*/
 	g.input = NewInput()
 	g.Start()
 }
@@ -149,18 +139,8 @@ func (g *Game) Start() {
 	g.Game.Start()
 }
 
-//These are all the global actors of the game.
-//TODO: fit these into the Game object
-var (
-	//GamePlayer *Player
-	//GameNPCs   []*NPC
-	//GameCamera *Camera
-	//GameBullets     *BulletController
-	//GameWorld *World
-	//GameExplosion   *ExplosionController
-
-	TermGame *Game
-)
+//TermGame is the reference to the main game
+var TermGame *Game
 
 //StopUpdate stops what was happening in the previous round/game
 func (g *Game) StopUpdate() {

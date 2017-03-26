@@ -28,7 +28,7 @@ func CreateArena() *Arena {
 func (a *Arena) createLargeArena() {
 
 	level := tl.NewBaseLevel(tl.Cell{
-		Bg: tl.ColorWhite,
+		Bg: tl.ColorBlue,
 		Fg: tl.ColorWhite,
 		Ch: ' ',
 	})
@@ -88,6 +88,7 @@ func (a *Arena) createLargeArena() {
 			break
 		}
 	}
+	TermGame.player.Reset()
 	a.playermanager.AddPlayer(TermGame.player)
 	a.camera = CreateCamera(-100, 0, 40, 10, a.arena.BaseLevel, 1)
 	TermGame.Screen().SetLevel(a.arena.BaseLevel)
@@ -98,7 +99,7 @@ func (a *Arena) createLargeArena() {
 func (a *Arena) createSmallArena() {
 
 	level := tl.NewBaseLevel(tl.Cell{
-		Bg: tl.ColorWhite,
+		Bg: tl.ColorBlue,
 		Fg: tl.ColorWhite,
 		Ch: ' ',
 	})
@@ -131,12 +132,17 @@ func (a *Arena) createSmallArena() {
 	npc := CreateNPC(40, 45, tl.ColorMagenta, a.arena.BaseLevel)
 	level.AddEntity(npc)
 	a.playermanager.AddPlayer(npc)
-
+	TermGame.player.Reset()
 	a.playermanager.AddPlayer(TermGame.player)
 	TermGame.Screen().SetLevel(a.arena.BaseLevel)
 	a.camera = CreateCamera(-100, 0, 40, 10, a.arena.BaseLevel, 0)
 	TermGame.player.SetLevel(a.arena.BaseLevel)
 
+}
+
+//SetMessage satisfies the interface
+func (a *Arena) SetMessage(msg GameMessage) {
+	a.msg = msg
 }
 
 //Update meets the requirements for a gamestate
