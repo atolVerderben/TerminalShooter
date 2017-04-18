@@ -1,10 +1,17 @@
 # Terminal Shooter
-A terminal arena shooter game. First started for the Linux Game Jame 2017.
-This was originally just a fun idea to use something so simple I wouldn't even need to use art for, 
-that was inorder to fit in the time frame I was given. Also between my job and kids...
 
+## Summary
+An arena shooter inside the terminal. Currently only against the AI.
+
+## Why?
+I first started this game for the Linux Game Jame 2017.
+I picked a terminal approach because with the time allotted for the jam and between work and kids I just didn't have the time to worry about art assets. I wasn't content with just "another roguelike" in the terminal, so I wanted something more action based. I'd never played a shooter in the terminal so I set out to change that.
 
 
 ## Future Tasks
+* Fluid UI experience
+* Lots of code clean up (Game Jams make sloppy code)
+* Different weapons
+* More arenas
 * LAN Support
   * Ideally Internet Multiplayer as well
