@@ -53,7 +53,7 @@ func (p *PlayerManager) Update() {
 			GameOverInfo.center = true
 			p.level.AddEntity(GameOverInfo)
 		}
-		GameOverInfo.text.SetText("You Win! Foes are Vanquished! Press Ctrl+C to Exit")
+		GameOverInfo.text.SetText("You Win! Foes are Vanquished! Press Ctrl+C to Exit or Ctrl+Q to Restart")
 	}
 	if GameOverInfo != nil {
 		GameOverInfo.OffsetX, GameOverInfo.OffsetY = p.level.Offset()

@@ -107,7 +107,8 @@ func NewGame() *Game {
 		states: map[string]GameState{},
 	}
 	g.states["MainMenu"] = CreateMainMenu()
-	g.currentState = g.states["MainMenu"] //g.Arena
+	g.states["Title"] = CreateTitle()
+	g.currentState = g.states["Title"] //g.Arena
 	return g
 }
 
@@ -128,6 +129,8 @@ func (g *Game) Run() {
 	switch cs := g.currentState.(type) {
 	case *MainMenu:
 		cs.ShowMainMenu(g)
+	case *TitleMain:
+		cs.ShowTitleMain(g)
 	}
 	g.input = NewInput()
 	g.Start()

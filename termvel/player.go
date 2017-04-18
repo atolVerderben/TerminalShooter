@@ -72,7 +72,7 @@ func (player *Player) Update() {
 			GameOverInfo.center = true
 			player.level.AddEntity(GameOverInfo)
 		}
-		GameOverInfo.text.SetText("Game Over! You Died! Press Ctrl+C to Exit")
+		GameOverInfo.text.SetText("Game Over! You Died! Press Ctrl+C to Exit or Ctrl+Q to Restart")
 	}
 	player.Character.Update()
 }

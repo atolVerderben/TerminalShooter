@@ -6,6 +6,8 @@ import (
 	tl "github.com/JoelOtter/termloop"
 )
 
+//TODO: Pull many of the hard-coded switches out to the appropriate structs
+
 //Input represents the player input
 type Input struct {
 	Keys      map[string]tl.Key
@@ -70,6 +72,24 @@ func (input *Input) Update(event tl.Event, player *Player) {
 				}
 			}
 		}
+		break
+	case *TitleMain:
+		if event.Type == tl.EventMouse {
+			switch event.Key {
+			case tl.MouseRelease:
+				for _, option := range gs.options {
+					mx, my := event.MouseX, event.MouseY
+					x, y := option.Position()
+					w, h := option.Size()
+					if mx >= x && mx <= x+w {
+						if my >= y && my <= y+h {
+							option.Action()
+						}
+					}
+				}
+			}
+		}
+		break
 	}
 
 }
@@ -90,6 +110,7 @@ func (input *Input) UpdateGamePlay(event tl.Event, player *Player, gs *Arena) {
 			break
 		case tl.KeyCtrlQ:
 			input.gameState.SetMessage(MsgMainMenu)
+			//TermGame.StopUpdate()
 			break
 		case tl.KeyTab:
 			//GameCamera.CenterOn(player.Character)
