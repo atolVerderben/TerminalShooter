@@ -1,4 +1,6 @@
 # Terminal Shooter
+![alt text](/screenshots/terminalshooterss1.png "ScreenShot 1")
+
 
 ## Summary
 An arena shooter inside the terminal. Currently only against the AI.
