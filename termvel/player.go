@@ -67,17 +67,18 @@ const (
 func (player *Player) Update() {
 	Information.text.SetText(fmt.Sprintf("Player Health: %v", player.Health))
 	if player.isDead {
-		if GameOverInfo == nil {
+		/*if GameOverInfo == nil {
 			GameOverInfo = NewEventInfo(0, 10)
 			GameOverInfo.center = true
 			player.level.AddEntity(GameOverInfo)
 		}
-		GameOverInfo.text.SetText("Game Over! You Died! Press Ctrl+C to Exit or Ctrl+Q to Restart")
+		GameOverInfo.text.SetText("Game Over! You Died! Press Ctrl+C to Exit or Ctrl+Q to Restart")*/
+
 	}
 	player.Character.Update()
 }
 
 //Tick processes input and reactes accordingly
-func (player *Player) Tick(event tl.Event) {
+//func (player *Player) Tick(event tl.Event) {
 
-}
+//}

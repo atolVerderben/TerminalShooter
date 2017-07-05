@@ -88,6 +88,10 @@ func (g *Game) gameLoop() {
 			g.Screen().SetLevel(g.currentState.ReturnLevel())
 			g.currentState.SetMessage(MsgNone)
 			break
+		case MsgGameOver:
+			g.currentState = CreateGameOver(false) //g.states["MainMenu"]
+			g.Screen().SetLevel(g.currentState.ReturnLevel())
+			g.currentState.SetMessage(MsgNone)
 		}
 		g.input.gameState = g.currentState
 		g.currTime = time.Now()
@@ -107,7 +111,8 @@ func NewGame() *Game {
 		states: map[string]GameState{},
 	}
 	g.states["MainMenu"] = CreateMainMenu()
-	g.states["Title"] = CreateTitle()
+	g.states["Title"] = CreateTitle(g)
+	//g.Screen().AddEntity(g.states["Title"].Entity)
 	g.currentState = g.states["Title"] //g.Arena
 	return g
 }

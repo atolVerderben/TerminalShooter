@@ -149,6 +149,9 @@ func (a *Arena) SetMessage(msg GameMessage) {
 func (a *Arena) Update(g *Game) GameMessage {
 	if a.playermanager != nil {
 		a.playermanager.Update()
+		if g.player.isDead {
+			a.msg = MsgGameOver
+		}
 	}
 	a.camera.Update(g.Screen(), g.player.Character)
 	if a.bullets != nil {
@@ -163,4 +166,9 @@ func (a *Arena) Update(g *Game) GameMessage {
 //ReturnLevel returns the base level
 func (a *Arena) ReturnLevel() *tl.BaseLevel {
 	return a.arena.BaseLevel
+}
+
+//Tick processes input and reactes accordingly
+func (a *Arena) Tick(event tl.Event) {
+
 }

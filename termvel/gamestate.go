@@ -19,4 +19,5 @@ const (
 	MsgStartMainLarge
 	MsgMainMenu
 	MsgEndGame
+	MsgGameOver
 )
