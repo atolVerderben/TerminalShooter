@@ -12,6 +12,8 @@ type PlayerManager struct {
 	players []*Player
 	ai      []*NPC
 	level   *tl.BaseLevel
+	numAI   int
+	numDead int
 }
 
 //NewPlayerManager returns a PlayerManager
@@ -30,6 +32,7 @@ func (p *PlayerManager) AddPlayer(player participant) {
 		break
 	case *NPC:
 		p.ai = append(p.ai, guy)
+		p.numAI++
 		break
 	}
 }
@@ -47,7 +50,8 @@ func (p *PlayerManager) Update() {
 			dead++
 		}
 	}
-	if dead >= len(p.ai) {
+	p.numDead = dead
+	/*if dead >= len(p.ai) {
 		if GameOverInfo == nil {
 			GameOverInfo = NewEventInfo(0, 10)
 			GameOverInfo.center = true
@@ -57,5 +61,5 @@ func (p *PlayerManager) Update() {
 	}
 	if GameOverInfo != nil {
 		GameOverInfo.OffsetX, GameOverInfo.OffsetY = p.level.Offset()
-	}
+	}*/
 }

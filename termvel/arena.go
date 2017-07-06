@@ -11,6 +11,7 @@ type Arena struct {
 	playermanager *PlayerManager
 	camera        *Camera
 	msg           GameMessage
+	deathTick     int
 }
 
 //CreateArena returns an Arena pointer
@@ -150,7 +151,24 @@ func (a *Arena) Update(g *Game) GameMessage {
 	if a.playermanager != nil {
 		a.playermanager.Update()
 		if g.player.isDead {
-			a.msg = MsgGameOver
+			if a.deathTick == 0 {
+				a.deathTick = 1
+			} else {
+				a.deathTick++
+				if a.deathTick > 120 {
+					a.msg = MsgGameOver
+				}
+			}
+		}
+		if a.playermanager.numDead >= a.playermanager.numAI {
+			if a.deathTick == 0 {
+				a.deathTick = 1
+			} else {
+				a.deathTick++
+				if a.deathTick > 120 {
+					a.msg = MsgEndGame
+				}
+			}
 		}
 	}
 	a.camera.Update(g.Screen(), g.player.Character)
