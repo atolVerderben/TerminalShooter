@@ -55,27 +55,6 @@ func (input *Input) Update(event tl.Event, player *Player) {
 	switch gs := input.gameState.(type) {
 	case *Arena:
 		input.UpdateGamePlay(event, player, gs)
-		break
-	case *MainMenu:
-		if event.Type == tl.EventMouse {
-			switch event.Key {
-			case tl.MouseRelease:
-				for _, option := range gs.options {
-					mx, my := event.MouseX, event.MouseY
-					x, y := option.Position()
-					w, h := option.Size()
-					if mx >= x && mx <= x+w {
-						if my >= y && my <= y+h {
-							option.Action()
-						}
-					}
-				}
-			}
-		}
-		break
-	case *TitleMain:
-
-		break
 	}
 
 }

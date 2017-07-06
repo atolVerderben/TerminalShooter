@@ -2,29 +2,34 @@ package termvel
 
 import tl "github.com/JoelOtter/termloop"
 
-//TitleMain is how you will use menus....
-type TitleMain struct {
+//MainMenu is the beginning of the game
+type MainMenu struct {
 	*Menu
 	background *tl.BaseLevel
 	msg        GameMessage
 }
 
-//CreateTitle returns a pointer for the MainMenu Game State
-func CreateTitle(g *Game) *TitleMain {
-	m := &TitleMain{
-		Menu: NewBasicMenu(),
+//CreateMainMenu returns a pointer for the MainMenu Game State
+func CreateMainMenu() *MainMenu {
+	m := &MainMenu{
 		background: tl.NewBaseLevel(tl.Cell{
 			Bg: tl.ColorBlack,
 			Fg: tl.ColorWhite,
 			Ch: ' ',
 		}),
-		msg: MsgNone,
+		Menu: NewBasicMenu(),
+		msg:  MsgNone,
 	}
-	m.textElements = append(m.textElements, tl.NewText(10, 10, "Terminal Arena Shooter:", tl.ColorWhite, tl.ColorBlack))
+	m.textElements = append(m.textElements, tl.NewText(10, 10, "Click to Select Arena Size:", tl.ColorWhite, tl.ColorBlack))
 	m.options = append(m.options, &MenuOption{
-		Text: tl.NewText(10, 12, "Start", tl.ColorWhite, tl.ColorBlack),
+		Text: tl.NewText(10, 12, "Small", tl.ColorWhite, tl.ColorBlack),
 		Action: func() {
-			m.msg = MsgMainMenu
+			m.msg = MsgStartMainSmall
+		},
+	}, &MenuOption{
+		Text: tl.NewText(20, 12, "Large", tl.ColorWhite, tl.ColorBlack),
+		Action: func() {
+			m.msg = MsgStartMainLarge
 		},
 	})
 	for _, t := range m.textElements {
@@ -38,22 +43,27 @@ func CreateTitle(g *Game) *TitleMain {
 }
 
 //SetMessage satisfies the interface
-func (m *TitleMain) SetMessage(msg GameMessage) {
+func (m *MainMenu) SetMessage(msg GameMessage) {
 	m.msg = msg
 }
 
-//ShowTitleMain displays the main menu of the game
-func (m *TitleMain) ShowTitleMain(g *Game) {
+//ShowMainMenu displays the main menu of the game
+func (m *MainMenu) ShowMainMenu(g *Game) {
 	g.Screen().SetLevel(m.background)
 }
 
 //Update the menu
-func (m *TitleMain) Update(g *Game) GameMessage {
+func (m *MainMenu) Update(g *Game) GameMessage {
 	return m.msg
 }
 
+//ReturnLevel returns the background of the menu (also includes all other stuff)
+func (m *MainMenu) ReturnLevel() *tl.BaseLevel {
+	return m.background
+}
+
 //Tick processes input and reactes accordingly
-func (m *TitleMain) Tick(event tl.Event) {
+func (m *MainMenu) Tick(event tl.Event) {
 	if event.Type == tl.EventMouse {
 		switch event.Key {
 		case tl.MouseRelease:
@@ -69,9 +79,4 @@ func (m *TitleMain) Tick(event tl.Event) {
 			}
 		}
 	}
-}
-
-//ReturnLevel returns the background of the menu (also includes all other stuff)
-func (m *TitleMain) ReturnLevel() *tl.BaseLevel {
-	return m.background
 }

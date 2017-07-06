@@ -9,20 +9,20 @@ import (
 //GameOver is how you will use menus....
 type GameOver struct {
 	*Menu
-	msg GameMessage
+	background *tl.BaseLevel
+	msg        GameMessage
 }
 
 //CreateGameOver returns a pointer for the MainMenu Game State
 func CreateGameOver(win bool) *GameOver {
 	m := &GameOver{
-		Menu: &Menu{
-			background: tl.NewBaseLevel(tl.Cell{
-				Bg: tl.ColorBlack,
-				Fg: tl.ColorWhite,
-				Ch: ' ',
-			}),
-		},
-		msg: MsgNone,
+		background: tl.NewBaseLevel(tl.Cell{
+			Bg: tl.ColorBlack,
+			Fg: tl.ColorWhite,
+			Ch: ' ',
+		}),
+		Menu: NewBasicMenu(),
+		msg:  MsgNone,
 	}
 	if win {
 		m.textElements = append(m.textElements, tl.NewText(10, 10, "Congratulations! Your Foes are Defeated!", tl.ColorWhite, tl.ColorBlack))
@@ -48,6 +48,7 @@ func CreateGameOver(win bool) *GameOver {
 	for _, o := range m.options {
 		m.background.AddEntity(o)
 	}
+	m.background.AddEntity(m)
 	return m
 }
 
@@ -64,4 +65,28 @@ func (m *GameOver) ShowGameOver(g *Game) {
 //Update the menu
 func (m *GameOver) Update(g *Game) GameMessage {
 	return m.msg
+}
+
+//Tick processes input and reactes accordingly
+func (m *GameOver) Tick(event tl.Event) {
+	if event.Type == tl.EventMouse {
+		switch event.Key {
+		case tl.MouseRelease:
+			for _, option := range m.options {
+				mx, my := event.MouseX, event.MouseY
+				x, y := option.Position()
+				w, h := option.Size()
+				if mx >= x && mx <= x+w {
+					if my >= y && my <= y+h {
+						option.Action()
+					}
+				}
+			}
+		}
+	}
+}
+
+//ReturnLevel returns the background
+func (m *GameOver) ReturnLevel() *tl.BaseLevel {
+	return m.background
 }
