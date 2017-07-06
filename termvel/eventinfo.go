@@ -13,7 +13,7 @@ type EventInfo struct {
 //NewEventInfo returns a new EventInfo...
 func NewEventInfo(x, y int) *EventInfo {
 	info := &EventInfo{}
-	info.text = tl.NewText(x, y, "Click somewhere", tl.ColorWhite, tl.ColorBlack)
+	info.text = tl.NewText(x, y, "", tl.ColorWhite, tl.ColorBlack)
 	return info
 }
 

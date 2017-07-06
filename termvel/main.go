@@ -74,13 +74,13 @@ func (g *Game) gameLoop() {
 		switch g.Msg {
 		case MsgStartMainSmall:
 			g.currentState = g.Arena
-			g.Arena.createSmallArena()
+			g.Arena.createSmallArena(g)
 			g.Arena.SetMessage(MsgNone)
 			break
 
 		case MsgStartMainLarge:
 			g.currentState = g.Arena
-			g.Arena.createLargeArena()
+			g.Arena.createLargeArena(g)
 			g.Arena.SetMessage(MsgNone)
 			break
 		case MsgMainMenu:

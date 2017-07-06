@@ -26,7 +26,7 @@ func CreateArena() *Arena {
 	return a
 }
 
-func (a *Arena) createLargeArena() {
+func (a *Arena) createLargeArena(g *Game) {
 
 	level := tl.NewBaseLevel(tl.Cell{
 		Bg: tl.ColorBlue,
@@ -64,7 +64,7 @@ func (a *Arena) createLargeArena() {
 	a.explosions = CreateExplosionController(a.arena.BaseLevel)
 
 	a.playermanager = NewPlayerManager(a.arena.BaseLevel)
-	level.AddEntity(TermGame.player)
+	level.AddEntity(g.player)
 	for i := 0; i < 4; i++ {
 		switch i {
 		case 0:
@@ -89,15 +89,16 @@ func (a *Arena) createLargeArena() {
 			break
 		}
 	}
-	TermGame.player.Reset()
-	a.playermanager.AddPlayer(TermGame.player)
-	a.camera = CreateCamera(-100, 0, 40, 10, a.arena.BaseLevel, 1)
-	TermGame.Screen().SetLevel(a.arena.BaseLevel)
-	TermGame.player.SetLevel(a.arena.BaseLevel)
+	g.player.Reset()
+	a.playermanager.AddPlayer(g.player)
+	a.camera = CreateCamera(-50, 0, 40, 10, a.arena.BaseLevel, 1)
+	g.Screen().SetLevel(a.arena.BaseLevel)
+	g.player.SetLevel(a.arena.BaseLevel)
+	a.deathTick = 0
 
 }
 
-func (a *Arena) createSmallArena() {
+func (a *Arena) createSmallArena(g *Game) {
 
 	level := tl.NewBaseLevel(tl.Cell{
 		Bg: tl.ColorBlue,
@@ -129,15 +130,15 @@ func (a *Arena) createSmallArena() {
 	a.bullets = CreateBulletController(a.arena.BaseLevel)
 	a.explosions = CreateExplosionController(a.arena.BaseLevel)
 	a.playermanager = NewPlayerManager(a.arena.BaseLevel)
-	level.AddEntity(TermGame.player)
+	level.AddEntity(g.player)
 	npc := CreateNPC(40, 45, tl.ColorMagenta, a.arena.BaseLevel)
 	level.AddEntity(npc)
 	a.playermanager.AddPlayer(npc)
-	TermGame.player.Reset()
-	a.playermanager.AddPlayer(TermGame.player)
-	TermGame.Screen().SetLevel(a.arena.BaseLevel)
-	a.camera = CreateCamera(-100, 0, 40, 10, a.arena.BaseLevel, 0)
-	TermGame.player.SetLevel(a.arena.BaseLevel)
+	g.player.Reset()
+	a.playermanager.AddPlayer(g.player)
+	g.Screen().SetLevel(a.arena.BaseLevel)
+	a.camera = CreateCamera(-50, 0, 30, 10, a.arena.BaseLevel, 1)
+	g.player.SetLevel(a.arena.BaseLevel)
 
 }
 

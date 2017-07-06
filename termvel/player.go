@@ -78,6 +78,13 @@ func (player *Player) Update() {
 	player.Character.Update()
 }
 
+//Reset is used to set the character back to the "beginning" state
+func (player *Player) Reset() {
+	player.Character.Reset()
+	player.SetPosition(20, 20)
+
+}
+
 //Tick processes input and reactes accordingly
 //func (player *Player) Tick(event tl.Event) {
 
